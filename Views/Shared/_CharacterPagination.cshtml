@@ -1,0 +1,80 @@
+@{
+  int currentPage = (int)ViewData["CurrentPage"]!;
+  int totalPages = Model.Pages;
+  int startPage = Math.Max(1, currentPage - 2);
+  int endPage = Math.Min(totalPages, currentPage + 2);
+}
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+      <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+    @if (startPage > 1)
+    {
+      <li class="page-item">
+        <a class="page-link" asp-action="Index" asp-route-page="1">1</a>
+      </li>
+      @if (startPage > 2)
+      {
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+      }
+    }
+
+    @for (int i = startPage; i <= endPage; i++)
+    {
+      <li class="page-item @(i == currentPage ? "active" : "")">
+        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+      </li>
+    }
+
+    @if (endPage < totalPages)
+    {
+      @if (endPage < totalPages - 1)
+      {
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+      }
+      <li class="page-item">
+        <a class="page-link" asp-action="Index" asp-route-page="@totalPages">@totalPages</a>
+      </li>
+    }
+
+    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+      <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+@* 
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+      <a class="page-link" href="#" onclick="loadPage(@(currentPage - 1))" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+@for (int i = startPage; i <= endPage; i++)
+{
+  <li class="page-item @(i == currentPage ? "active" : "")">
+    <a class="page-link" href="#" onclick="loadPage(@i)">@i</a>
+  </li>
+}
+
+<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+  <a class="page-link" href="#" onclick="loadPage(@(currentPage + 1))" aria-label="Next">
+    <span aria-hidden="true">&raquo;</span>
+  </a>
+</li>
+</ul>
+</nav> *@

@@ -1,0 +1,12 @@
+@model Character
+
+<div class="card">
+  <img src="@Model.Image" class="card-img-top" alt="@Model.Name">
+  <div class="card-body">
+    <h5 class="card-title">@Model.Name</h5>
+    <p class="card-text">
+      <strong>Status:</strong> @Model.Status <br>
+      <strong>Species:</strong> @Model.Species
+    </p>
+  </div>
+</div>

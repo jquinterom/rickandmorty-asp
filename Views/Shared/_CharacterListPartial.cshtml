@@ -1,0 +1,10 @@
+@model List<Character>
+
+<div class="row">
+  @foreach (var character in Model)
+  {
+    <div class="col-md-4 mb-4">
+      @await Html.PartialAsync("_CharacterCard", character)
+    </div>
+  }
+</div>
