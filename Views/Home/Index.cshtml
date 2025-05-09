@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<Character>
+
+<h1>Personajes de Rick and Morty</h1>
+
+<div class="row">
+    @foreach (var character in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="@character.Image" class="card-img-top" alt="@character.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@character.Name</h5>
+                    <p class="card-text">
+                        <strong>Status:</strong> @character.Status <br>
+                        <strong>Species:</strong> @character.Species
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
