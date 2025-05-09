@@ -1,9 +1,11 @@
+using RickAndMorty.Core.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddHttpClient<RickAndMortyService>(client =>
+builder.Services.AddHttpClient<IRickAndMortyService, RickAndMortyService>(client =>
 {
   client.BaseAddress = new Uri("https://rickandmortyapi.com/api/");
 });

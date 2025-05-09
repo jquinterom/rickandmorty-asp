@@ -1,25 +1,21 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using RickAndMorty.Core.Interfaces;
 using RickAndMorty.Models;
 
 namespace RickAndMorty.Controllers;
 
-public class HomeController : Controller
+public class HomeController(ILogger<HomeController> logger, IRickAndMortyService rickAndMortyService) : Controller
 {
-  private readonly ILogger<HomeController> _logger;
+  private readonly ILogger<HomeController> _logger = logger;
 
-  private readonly RickAndMortyService _rickAndMortyService;
+  private readonly IRickAndMortyService _rickAndMortyService = rickAndMortyService;
 
-  public HomeController(ILogger<HomeController> logger, RickAndMortyService rickAndMortyService)
+  public async Task<IActionResult> Index(int page = 1)
   {
-    _logger = logger;
-    _rickAndMortyService = rickAndMortyService;
-  }
-
-  public async Task<IActionResult> Index()
-  {
-    var characters = await _rickAndMortyService.GetCharactersAsync();
-    return View(characters);
+    var response = await _rickAndMortyService.GetCharactersAsync(page);
+    ViewData["CurrentPage"] = page;
+    return View(response);
   }
 
   public IActionResult Privacy()
