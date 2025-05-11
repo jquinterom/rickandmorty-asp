@@ -1,13 +1,43 @@
 ﻿@{
-  ViewData["Title"] = "Character List";
+  ViewData["Title"] = Model.Response.Info?.Count > 0
+  ? $"Personajes de Rick and Morty (Total: {Model.Response.Info.Count}) - Page: {ViewData["CurrentPage"]}"
+  : "Personajes de Rick and Morty";
 }
 
-@model ApiResponse<Character>
+@model CharacterListResponse
 
-<h1>Personajes de Rick and Morty</h1>
 
-<div id="character-container">
-  @await Html.PartialAsync("_CharacterListPartial", Model.Results)
-</div>
+<div class="container mt-4">
+  <h2>@ViewData["Title"]</h2>
 
-@await Html.PartialAsync("_CharacterPagination", Model.Info)
+  <htmlContent id="character-container">
+    @await Html.PartialAsync("_CharacterListPartial", Model)
+  </htmlContent @await Html.PartialAsync("_CharacterPagination", Model.Response.Info) </div>
+
+@section Scripts {
+    <script>
+      function saveFavorite(characterId) {
+        $.ajax({
+          url: '@Url.Action("SaveFavoriteCharacter", "Home")',
+          type: 'POST',
+          data: { characterId: characterId },
+          success: function () {
+            const buttonIcon = $("#toggle-favorite-" + characterId).children("i")
+
+            const buttonHasClass = buttonIcon.hasClass("far")
+
+            if (buttonHasClass) {
+              buttonIcon.removeClass('far')
+              buttonIcon.addClass('fas text-warning');
+            } else {
+              buttonIcon.removeClass('fas text-warning')
+              buttonIcon.addClass('far');
+            }
+          },
+          error: function () {
+            console.error('Error al guardar');
+          }
+        });
+      }
+    </script>
+}

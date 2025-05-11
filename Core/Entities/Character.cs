@@ -6,14 +6,16 @@ public class Character
   public int Id { get; set; }
 
   [JsonPropertyName("name")]
-  public string Name { get; set; }
+  public required string Name { get; set; }
 
   [JsonPropertyName("status")]
-  public string Status { get; set; }
+  public required string Status { get; set; }
 
   [JsonPropertyName("species")]
-  public string Species { get; set; }
+  public required string Species { get; set; }
 
   [JsonPropertyName("image")]
-  public string Image { get; set; }
+  public required string Image { get; set; }
+
+  public bool IsFavorite { get; set; }
 }

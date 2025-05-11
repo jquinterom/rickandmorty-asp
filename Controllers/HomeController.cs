@@ -5,7 +5,10 @@ using RickAndMorty.Models;
 
 namespace RickAndMorty.Controllers;
 
-public class HomeController(ILogger<HomeController> logger, IRickAndMortyService rickAndMortyService) : Controller
+public class HomeController(
+  ILogger<HomeController> logger,
+  IRickAndMortyService rickAndMortyService
+  ) : Controller
 {
   private readonly ILogger<HomeController> _logger = logger;
 
@@ -13,9 +16,37 @@ public class HomeController(ILogger<HomeController> logger, IRickAndMortyService
 
   public async Task<IActionResult> Index(int page = 1)
   {
-    var response = await _rickAndMortyService.GetCharactersAsync(page);
     ViewData["CurrentPage"] = page;
+
+    var charactersApiResponse = await _rickAndMortyService.GetCharactersAsync(page);
+
+    var characterIds = await _rickAndMortyService.GetFavoriteCharactersAsync();
+
+    var namesList = characterIds.Select(item => item.Name).ToList();
+
+    var response = new CharacterListResponse(response: charactersApiResponse, favoriteCharacters: namesList);
+
     return View(response);
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> SaveFavoriteCharacter(string characterId)
+  {
+    try
+    {
+      bool result = await _rickAndMortyService.SaveFavoriteCharacterAsync(characterId);
+
+      if (!result)
+      {
+        return BadRequest();
+      }
+
+      return Ok();
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(ex.Message);
+    }
   }
 
   public IActionResult Privacy()

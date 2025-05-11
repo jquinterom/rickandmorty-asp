@@ -1,8 +1,12 @@
-@model List<Character>
+@model CharacterListResponse
 
 <div class="row">
-  @foreach (var character in Model)
+  @foreach (var character in Model.Response.Results)
   {
+    var isFavorite = Model?.FavoriteCharacters?.Contains(character.Id.ToString());
+
+    character.IsFavorite = isFavorite ?? false;
+
     <div class="col-md-4 mb-4">
       @await Html.PartialAsync("_CharacterCard", character)
     </div>

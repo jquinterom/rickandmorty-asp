@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using RickAndMorty.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,17 @@ builder.Services.AddHttpClient<IRickAndMortyService, RickAndMortyService>(client
 {
   client.BaseAddress = new Uri("https://rickandmortyapi.com/api/");
 });
+
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDbSettings"));
+
+builder.Services.AddSingleton<IMongoClient, MongoClient>(sp =>
+{
+  var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+  return new MongoClient(settings.ConnectionString);
+});
+
+builder.Services.AddScoped<MongoDbRepository<FavoriteCharacter>>();
 
 var app = builder.Build();
 
