@@ -13,7 +13,7 @@
       <strong>Species:</strong> @Model.Species
     </p>
     <button class="btn position-absolute end-0 bottom-0" type="button" data-bs-toggle="tooltip" title="Save Favorite"
-      onClick="saveFavorite('@Model.Id')" id="toggle-favorite-@Model.Id">
+      onClick="saveFavorite('@Model.Id','@Url.Action("SaveFavoriteCharacter", "Home")')" id="toggle-favorite-@Model.Id">
       <i class="fa-star fa-lg @isFavoriteClass"></i>
     </button>
   </div>

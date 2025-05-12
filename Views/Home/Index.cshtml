@@ -15,29 +15,5 @@
   </htmlContent @await Html.PartialAsync("_CharacterPagination", Model.Response.Info) </div>
 
 @section Scripts {
-    <script>
-      function saveFavorite(characterId) {
-        $.ajax({
-          url: '@Url.Action("SaveFavoriteCharacter", "Home")',
-          type: 'POST',
-          data: { characterId: characterId },
-          success: function () {
-            const buttonIcon = $("#toggle-favorite-" + characterId).children("i")
-
-            const buttonHasClass = buttonIcon.hasClass("far")
-
-            if (buttonHasClass) {
-              buttonIcon.removeClass('far')
-              buttonIcon.addClass('fas text-warning');
-            } else {
-              buttonIcon.removeClass('fas text-warning')
-              buttonIcon.addClass('far');
-            }
-          },
-          error: function (error) {
-            console.error('Error update favorite character', error);
-          }
-        });
-      }
-    </script>
+    <script src="~/js/UpdateFavoriteCharacter.js" asp-append-version="true" defer crossorigin="anonymous"></script>
 }
