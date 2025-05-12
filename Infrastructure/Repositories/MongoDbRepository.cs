@@ -3,16 +3,28 @@ using MongoDB.Driver;
 
 public class MongoDbRepository<T> where T : class
 {
-  private readonly IMongoCollection<T> _collection;
+  private readonly IMongoCollection<T>? _collection;
 
   public MongoDbRepository(IOptions<MongoDbSettings> settings, IMongoClient mongoClient)
   {
-    var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
-    _collection = database.GetCollection<T>(settings.Value.CollectionName);
+    if (settings != null && mongoClient != null)
+    {
+      var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
+      _collection = database.GetCollection<T>(settings.Value.CollectionName);
+    }
   }
 
-  public async Task InsertAsync(T entity) => await _collection.InsertOneAsync(entity);
-  public async Task<List<T>> GetAllAsync() => await _collection.Find(_ => true).ToListAsync();
+  public async Task InsertAsync(T entity)
+  {
+    if (_collection == null) return;
+    await _collection.InsertOneAsync(entity);
+  }
+  public async Task<List<T>> GetAllAsync()
+  {
+    if (_collection == null) return [];
+    return await _collection.Find(_ => true).ToListAsync();
+  }
+
   public async Task<bool> DeleteOneAsync(T entity)
   {
     ArgumentNullException.ThrowIfNull(entity);
@@ -23,6 +35,8 @@ public class MongoDbRepository<T> where T : class
 
     try
     {
+      if (_collection == null) return false;
+
       var result = await _collection.DeleteOneAsync(filter);
       return result.DeletedCount > 0;
     }

@@ -15,21 +15,34 @@ builder.Services.AddHttpClient<IRickAndMortyService, RickAndMortyService>(client
 
 Env.Load();
 
-builder.Services.Configure<MongoDbSettings>(options =>
-{
-  options.ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING") ?? "";
-  options.DatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME") ?? "";
-  options.CollectionName = Environment.GetEnvironmentVariable("MONGO_COLLECTION_NAME") ?? "";
-});
+var mongoConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING") ?? "";
+var mongoDatabaseName = Environment.GetEnvironmentVariable("MONGO_DATABASE_NAME") ?? "";
+var mongoCollectionName = Environment.GetEnvironmentVariable("MONGO_COLLECTION_NAME") ?? "";
 
-// Inject the MongoDB client
-builder.Services.AddSingleton<IMongoClient>(sp =>
+if (!string.IsNullOrEmpty(mongoConnectionString) &&
+    !string.IsNullOrEmpty(mongoDatabaseName) &&
+    !string.IsNullOrEmpty(mongoCollectionName))
 {
-  var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-  return new MongoClient(settings.ConnectionString);
-});
+  builder.Services.Configure<MongoDbSettings>(options =>
+  {
+    options.ConnectionString = mongoConnectionString;
+    options.DatabaseName = mongoDatabaseName;
+    options.CollectionName = mongoCollectionName;
+  });
 
-builder.Services.AddScoped<MongoDbRepository<FavoriteCharacter>>();
+  // Inject the MongoDB client
+  builder.Services.AddSingleton<IMongoClient>(sp =>
+  {
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
+  });
+
+  builder.Services.AddScoped<MongoDbRepository<FavoriteCharacter>>();
+}
+else
+{
+  builder.Services.AddScoped(typeof(MongoDbRepository<>), typeof(NullMongoDbRepository<>));
+}
 
 var app = builder.Build();
 

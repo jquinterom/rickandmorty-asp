@@ -34,8 +34,8 @@
               buttonIcon.addClass('far');
             }
           },
-          error: function () {
-            console.error('Error al guardar');
+          error: function (error) {
+            console.error('Error update favorite character', error);
           }
         });
       }
